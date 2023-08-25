@@ -2,13 +2,15 @@
 
 namespace Biblioteka.Models
 {
-    public class Resource
+    public class Zasob
     {
         public int Id { get; set; }
         [Required]
-        public string Title { get; set; }
+        [Display(Name = "Tytuł")]
+        public string Tytul { get; set; }
         [Required]
         public string ISBN { get; set; }
-        public List<Author>? Authors { get; set; }
+        [Display(Name = "Autorzy")]
+        public List<Autor>? Autorzy { get; set; }
     }
 }

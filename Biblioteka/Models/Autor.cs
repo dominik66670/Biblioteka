@@ -3,17 +3,17 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Biblioteka.Models
 {
-    public class Author
+    public class Autor
     {
         public int Id { get; set; }
         [Required]
-        public string Name { get; set; }
+        public string Nazwa { get; set; }
         public string? Description { get; set; }
         [DataType(DataType.Date)]
-        [Display(Name = "Date of brith")]
-        public DateTime? DateOfBrith { get; set; }
+        [Display(Name = "Data urodzenia")]
+        public DateTime? DataUrodzenia { get; set; }
         [DataType(DataType.Date)]
-        [Display(Name = "Date of death")]
-        public DateTime? DateOfDeath { get; set;}
+        [Display(Name = "Date śmierci")]
+        public DateTime? DataSmierci { get; set;}
     }
 }

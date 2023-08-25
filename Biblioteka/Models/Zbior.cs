@@ -2,13 +2,13 @@
 
 namespace Biblioteka.Models
 {
-    public class Collection
+    public class Zbior
     {
         public int Id { get; set; }
         [Required]
-        public Resource Resource { get; set; }
+        public Zasob Zasob { get; set; }
         [Required]
-        [Display(Name = "Is Available")]
-        public bool IsAvailable { get; set; }
+        [Display(Name = "Czy dostępny")]
+        public bool CzyDostepny { get; set; }
     }
 }
