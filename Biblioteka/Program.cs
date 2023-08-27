@@ -1,3 +1,6 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Biblioteka.Data;
 namespace Biblioteka
 {
     public class Program
@@ -5,6 +8,13 @@ namespace Biblioteka
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+                        var connectionString = builder.Configuration.GetConnectionString("BibliotekaContextConnection") ?? throw new InvalidOperationException("Connection string 'BibliotekaContextConnection' not found.");
+
+                                    builder.Services.AddDbContext<BibliotekaContext>(options =>
+                options.UseSqlServer(connectionString));
+
+                                                builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddEntityFrameworkStores<BibliotekaContext>();
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
@@ -23,8 +33,10 @@ namespace Biblioteka
             app.UseStaticFiles();
 
             app.UseRouting();
+                        app.UseAuthentication();;
 
             app.UseAuthorization();
+            app.MapRazorPages();
 
             app.MapControllerRoute(
                 name: "default",
