@@ -37,6 +37,12 @@ namespace Biblioteka
 
             app.UseAuthorization();
             app.MapRazorPages();
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+
+                SeedData.Initialize(services);
+            }
 
             app.MapControllerRoute(
                 name: "default",
