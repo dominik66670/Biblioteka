@@ -38,7 +38,7 @@
                     {
                         @foreach (var autor in item.Autorzy)
                         {
-                            @Html.DisplayFor(modelItem => autor.Nazwa)
+                            <a  asp-controller="Autors" asp-action="Details" asp-route-id="@autor.Id">@Html.DisplayFor(modelItem => autor.Nazwa)</a>
                         }
                     }
                     

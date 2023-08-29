@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Biblioteka.Data;
 using Biblioteka.Models;
 using Microsoft.IdentityModel.Tokens;
+using System.Runtime.Intrinsics.X86;
 
 namespace Biblioteka.Controllers
 {
@@ -21,18 +22,39 @@ namespace Biblioteka.Controllers
         }
 
         // GET: Autors
-        public async Task<IActionResult> Index(string serachString)
+        public async Task<IActionResult> Index(string? serachString, string? order)
         {
+            var autorzy = _context.Autor.ToList();
             if (!serachString.IsNullOrEmpty())
             {
-                var autorzy = _context.Autor.ToList().FindAll(x => x.Nazwa.Contains(serachString));
+                autorzy = _context.Autor.ToList().FindAll(x => x.Nazwa.Contains(serachString));
+                if (!order.IsNullOrEmpty())
+                {
+                    if (order.Equals("asc"))
+                    {
+                        autorzy = autorzy.OrderBy(a => a.Nazwa).ToList();
+                    }else if (order.Equals("dsc"))
+                    {
+                        autorzy = autorzy.OrderByDescending(a => a.Nazwa).ToList();
+                    }
+                }
                 return View(autorzy);
             }
             else
             {
-                return _context.Autor != null ?
-                          View(await _context.Autor.ToListAsync()) :
-                          Problem("Entity set 'BibliotekaContext.Autor'  is null.");
+                if (!order.IsNullOrEmpty())
+                {
+                    if (order.Equals("asc"))
+                    {
+                        autorzy = autorzy.OrderBy(a => a.Nazwa).ToList();
+                    }
+                    else if (order.Equals("dsc"))
+                    {
+                        autorzy = autorzy.OrderByDescending(a => a.Nazwa).ToList();
+                    }
+                }
+
+                return View(autorzy);
             }
               
         }
@@ -44,16 +66,19 @@ namespace Biblioteka.Controllers
             {
                 return NotFound();
             }
-
-            var autor = await _context.Autor
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (autor == null)
+            var avm = new AutorViewModel()
+            {
+                Autor = await _context.Autor.FirstOrDefaultAsync(m => m.Id == id),
+                Dziela = _context.Zasob.Include(z => z.Autorzy).ToList().Where(zasob=> zasob.Autorzy.Any(autor => autor.Id==id)).ToList()
+            };
+            if (avm == null)
             {
                 return NotFound();
             }
 
-            return View(autor);
+            return View(avm);
         }
+
 
         // GET: Autors/Create
         public IActionResult Create()
@@ -156,6 +181,13 @@ namespace Biblioteka.Controllers
                 return Problem("Entity set 'BibliotekaContext.Autor'  is null.");
             }
             var autor = await _context.Autor.FindAsync(id);
+            _context.Zasob.Include(z => z.Autorzy).ToList().ForEach(z =>
+            {
+                if (z.Autorzy.Contains(autor))
+                {
+                    z.Autorzy.Remove(autor);
+                }
+            });
             if (autor != null)
             {
                 _context.Autor.Remove(autor);
