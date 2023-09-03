@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Runtime.InteropServices;
 
 namespace Biblioteka.Models
 {
@@ -11,6 +12,7 @@ namespace Biblioteka.Models
         [Required]
         public string ISBN { get; set; }
         [Display(Name = "Autorzy")]
+        
         public List<Autor>? Autorzy { get; set; }
     }
 }

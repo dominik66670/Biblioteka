@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Biblioteka.Data;
 using Biblioteka.Models;
+using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Biblioteka.Controllers
 {
@@ -20,13 +22,53 @@ namespace Biblioteka.Controllers
         }
 
         // GET: Zasobs
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? serachString, string? order,string? szukanePole)
         {
-            return _context.Zasob != null ? 
-                          View(await _context.Zasob
-                          .Include(x => x.Autorzy)
-                          .ToListAsync()) :
-                          Problem("Entity set 'BibliotekaContext.Zasob'  is null.");
+            var zasoby = _context.Zasob.Include(a => a.Autorzy).ToList();
+            if (!szukanePole.IsNullOrEmpty())
+            {
+                if (szukanePole.Equals("1"))
+                {
+                    if (!serachString.IsNullOrEmpty())
+                    {
+                        zasoby = zasoby.Where(z => z.Tytul.Contains(serachString)).ToList();
+                        
+                    }
+                    if (!order.IsNullOrEmpty())
+                    {
+                        if (order.Equals("asc"))
+                        {
+                            zasoby = zasoby.OrderBy(z => z.Tytul).ToList();
+                        }
+                        else if (order.Equals("dsc"))
+                        {
+                            zasoby = zasoby.OrderByDescending(z => z.Tytul).ToList();
+                        }
+                    }
+                }
+                else
+                {
+                    if (!serachString.IsNullOrEmpty())
+                    {
+                        zasoby = zasoby.Where(z => z.ISBN.Contains(serachString)).ToList();
+                        
+                    }
+                    if (!order.IsNullOrEmpty())
+                    {
+                        if (order.Equals("asc"))
+                        {
+                            zasoby = zasoby.OrderBy(z => z.ISBN).ToList();
+                        }
+                        else if (order.Equals("dsc"))
+                        {
+                            zasoby = zasoby.OrderByDescending(z => z.ISBN).ToList();
+                        }
+                    }
+                }
+            }
+
+
+            return View(zasoby);
         }
 
         // GET: Zasobs/Details/5
@@ -37,7 +79,7 @@ namespace Biblioteka.Controllers
                 return NotFound();
             }
 
-            var zasob = await _context.Zasob
+            var zasob = await _context.Zasob.Include(z => z.Autorzy)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (zasob == null)
             {
@@ -50,7 +92,8 @@ namespace Biblioteka.Controllers
         // GET: Zasobs/Create
         public IActionResult Create()
         {
-            return View();
+
+            return View(new AddEditZasobViewModel() { Autorzy=_context.Autor.ToList().OrderBy(a => a.Nazwa).ToList()});
         }
 
         // POST: Zasobs/Create
@@ -58,11 +101,30 @@ namespace Biblioteka.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Tytul,ISBN")] Zasob zasob)
+        public async Task<IActionResult> Create([Bind("Id,Tytul,ISBN")] Zasob zasob, List<int> selectedAutorIds)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(zasob);
+                // Detach the zasob from the context so it's treated as a new entity
+                //_context.Entry(zasob).State = EntityState.Detached;
+
+                // Create a new instance of Zasob
+                var newZasob = new Zasob
+                {
+                    Tytul = zasob.Tytul,
+                    ISBN = zasob.ISBN,
+                    Autorzy = new List<Autor>()
+                };
+
+                foreach (var autorId in selectedAutorIds)
+                {
+                    var existingAutor = await _context.Autor.FindAsync(autorId);
+                    if (existingAutor != null)
+                    {
+                        newZasob.Autorzy.Add(existingAutor);
+                    }
+                }
+                _context.Zasob.Add(newZasob);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
@@ -82,7 +144,8 @@ namespace Biblioteka.Controllers
             {
                 return NotFound();
             }
-            return View(zasob);
+            var addEdit = new AddEditZasobViewModel() { Autorzy = _context.Autor.ToList(), Zasob = zasob };
+            return View(addEdit);
         }
 
         // POST: Zasobs/Edit/5
@@ -90,7 +153,7 @@ namespace Biblioteka.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Tytul,ISBN")] Zasob zasob)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Tytul,ISBN")] Zasob zasob, List<int> selectedAutorIds)
         {
             if (id != zasob.Id)
             {
@@ -101,6 +164,15 @@ namespace Biblioteka.Controllers
             {
                 try
                 {
+                    zasob.Autorzy = new List<Autor>();
+                    foreach (var autorId in selectedAutorIds)
+                    {
+                        var existingAutor = await _context.Autor.FindAsync(autorId);
+                        if (existingAutor != null)
+                        {
+                            zasob.Autorzy.Add(existingAutor);
+                        }
+                    }
                     _context.Update(zasob);
                     await _context.SaveChangesAsync();
                 }

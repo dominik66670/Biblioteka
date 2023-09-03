@@ -22,8 +22,8 @@ namespace Biblioteka
                     );
                     context.SaveChanges();
                 }
-                //context.Autor.ExecuteDelete();
-                //context.SaveChanges ();
+                context.Autor.ExecuteDelete();
+                context.SaveChanges ();
                 
                 if (!context.Autor.Any()) 
                 {
@@ -101,8 +101,8 @@ namespace Biblioteka
                     );
                     context.SaveChanges();
                 }
-                //context.Zasob.ExecuteDelete();
-                //context.SaveChanges();
+                context.Zasob.ExecuteDelete();
+                context.SaveChanges();
                 //var Autorzy = context.Autor.ToList();
                 
 

@@ -1,4 +1,4 @@
-﻿@model Biblioteka.Models.Zbior
+﻿@model Biblioteka.Models.AddEditZbiorViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -14,9 +14,17 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group form-check">
                 <label class="form-check-label">
-                    <input class="form-check-input" asp-for="CzyDostepny" /> @Html.DisplayNameFor(model => model.CzyDostepny)
+                    <input class="form-check-input" asp-for="zbior.CzyDostepny" /> @Html.DisplayNameFor(model => model.zbior.CzyDostepny)
                 </label>
             </div>
+            <div class="form-group">
+                <label for="SelectedAutorIds">Wybierz zasób</label>
+                <select class="form-control" id="selectedZasobId" name="selectedZasobId">
+                    @foreach (var zasob in Model.zasobs)
+                    {
+                        <option value="@zasob.Id">@zasob.Tytul @zasob.ISBN</option>
+                    }
+                </select>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>

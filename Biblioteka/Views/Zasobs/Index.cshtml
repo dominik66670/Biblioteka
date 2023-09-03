@@ -4,11 +4,24 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Widok Zasobów</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Dodaj nowy zasób</a>
 </p>
+<form asp-controller="Zasobs" asp-action="Index" method="get">
+    <p>
+        Nazwa: <input type="text" name="serachString"/> 
+        Szukaj po <select name="szukanePole">
+            <option selected="true" value="1">Tytuł</option>
+            <option value="2">ISBN</option>
+        </select><br />
+        Sortowanie<br />
+        A...Z <input type="radio" name="order" value="asc" checked="true" /><br />
+        Z...A <input type="radio" name="order" value="dsc" /><br />
+        <input type="submit" value="Szukaj" />
+    </p>
+</form>
 <table class="table">
     <thead>
         <tr>
@@ -44,9 +57,8 @@
                     
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edytuj</a>
+                <a asp-action="Details" asp-route-id="@item.Id">Szczegóły</a>
             </td>
         </tr>
 }

@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Biblioteka.Data;
 using Biblioteka.Models;
 
+
 namespace Biblioteka.Controllers
 {
     public class WyporzyczeniesController : Controller
@@ -20,11 +21,20 @@ namespace Biblioteka.Controllers
         }
 
         // GET: Wyporzyczenies
-        public async Task<IActionResult> Index()
-        {
-              return _context.Wyporzyczenie != null ? 
-                          View(await _context.Wyporzyczenie.ToListAsync()) :
-                          Problem("Entity set 'BibliotekaContext.Wyporzyczenie'  is null.");
+        public async Task<IActionResult> Index(string nameSearchString, List<int> szukanyStatus, string order)
+        { 
+            var viewModel = new WyporzyczeniaViewModel() { 
+                wyporzyczenies= await _context.Wyporzyczenie
+                    .Include(w => w.Wyporzyczajacy)
+                    .Include(w => w.WyporzyczanyZbior)
+                    .Include(w => w.ObecnyStatus)
+                    .ToListAsync(),
+                statuses = await _context.Status.ToListAsync()
+            };
+            return View(viewModel);
+              //return _context.Wyporzyczenie != null ? 
+                          //View(await _context.Wyporzyczenie.Include(w => w.Wyporzyczajacy).Include(w => w.WyporzyczanyZbior).Include(w => w.ObecnyStatus).ToListAsync()) :
+                          //Problem("Entity set 'BibliotekaContext.Wyporzyczenie'  is null.");
         }
 
         // GET: Wyporzyczenies/Details/5

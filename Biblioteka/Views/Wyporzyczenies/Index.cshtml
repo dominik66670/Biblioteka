@@ -1,29 +1,57 @@
-﻿@model IEnumerable<Biblioteka.Models.Wyporzyczenie>
+﻿@model WyporzyczeniaViewModel
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Lista wyporzyczeń</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Wyporzycz</a>
 </p>
+<form asp-controller="Wyporzyczenies" asp-action="Index" method="get">
+    <p>
+        Imie i Nazwisko <input type="text" name="nameSerachString" /></br>
+        Status</br>
+        <select multiple name="szukanyStatus">
+            @foreach(var item in Model.statuses)
+            {
+                <option value="@item.Id">@item.Nazwa</option>
+            }
+        </select><br />
+        Sortowanie<br />
+        Rosnące <input type="radio" name="order" value="asc" checked="true" /><br />
+        Malejące <input type="radio" name="order" value="dsc" /><br />
+        <input type="submit" value="Szukaj" />
+    </p>
+</form>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.DataWyporzyczenia)
+                @Html.DisplayNameFor(model => model.wyporzyczenies.First().ObecnyStatus.Nazwa)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DataZwrotu)
+                @Html.DisplayNameFor(model => model.wyporzyczenies.First().DataWyporzyczenia)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.wyporzyczenies.First().DataZwrotu)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.wyporzyczenies.First().Wyporzyczajacy)
+            </th>
+            <th>
+                Id zbioru
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var item in Model.wyporzyczenies) {
         <tr>
+            <td>
+                    @Html.DisplayFor(modelItem => item.ObecnyStatus.Nazwa)
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.DataWyporzyczenia)
             </td>
@@ -31,9 +59,14 @@
                 @Html.DisplayFor(modelItem => item.DataZwrotu)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                @Html.DisplayFor(modelItem => item.Wyporzyczajacy.Imie)
+                @Html.DisplayFor(modelItem => item.Wyporzyczajacy.Nazwisko)
+            </td>
+                <td>
+                    <a asp-controller="Zbiors" asp-action="Details" asp-route-id="@item.WyporzyczanyZbior.Id">@Html.DisplayFor(modelItem => item.WyporzyczanyZbior.Id)</a>
+                </td>
+            <td>
+                <a asp-action="Details" asp-route-id="@item.Id">Szczegóły</a> |
             </td>
         </tr>
 }

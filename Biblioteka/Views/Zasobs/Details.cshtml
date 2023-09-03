@@ -4,7 +4,7 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<h1>Informacje o autorze</h1>
 
 <div>
     <h4>Zasob</h4>
@@ -21,6 +21,15 @@
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.ISBN)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Autorzy)
+        </dt>
+        <dd class="col-sm-10">
+            @foreach(var autor in Model.Autorzy)
+            {
+                <a asp-controller="Autors" asp-action="Details" asp-route-id="@autor.Id">@Html.DisplayFor(Model => autor.Nazwa)</a>
+            }
         </dd>
     </dl>
 </div>

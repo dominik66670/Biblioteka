@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Biblioteka.Data;
 using Biblioteka.Models;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Biblioteka.Controllers
 {
@@ -20,11 +21,51 @@ namespace Biblioteka.Controllers
         }
 
         // GET: Zbiors
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? serachString, string? order, string? szukanePole)
         {
-              return _context.Zbior != null ? 
-                          View(await _context.Zbior.ToListAsync()) :
-                          Problem("Entity set 'BibliotekaContext.Zbior'  is null.");
+            var zbiory = _context.Zbior.Include(z => z.Zasob).ToList();
+            if (!szukanePole.IsNullOrEmpty())
+            {
+                if (szukanePole.Equals("1"))
+                {
+                    if (!serachString.IsNullOrEmpty())
+                    {
+                        zbiory = zbiory.Where(z => z.Zasob.Tytul.Contains(serachString)).ToList();
+
+                    }
+                    if (!order.IsNullOrEmpty())
+                    {
+                        if (order.Equals("asc"))
+                        {
+                            zbiory = zbiory.OrderBy(z => z.Zasob.Tytul).ToList();
+                        }
+                        else if (order.Equals("dsc"))
+                        {
+                            zbiory = zbiory.OrderByDescending(z => z.Zasob.Tytul).ToList();
+                        }
+                    }
+                }
+                else
+                {
+                    if (!serachString.IsNullOrEmpty())
+                    {
+                        zbiory = zbiory.Where(z => z.Zasob.ISBN.Contains(serachString)).ToList();
+
+                    }
+                    if (!order.IsNullOrEmpty())
+                    {
+                        if (order.Equals("asc"))
+                        {
+                            zbiory = zbiory.OrderBy(z => z.Zasob.ISBN).ToList();
+                        }
+                        else if (order.Equals("dsc"))
+                        {
+                            zbiory = zbiory.OrderByDescending(z => z.Zasob.ISBN).ToList();
+                        }
+                    }
+                }
+            }
+            return View(zbiory);
         }
 
         // GET: Zbiors/Details/5
@@ -35,7 +76,7 @@ namespace Biblioteka.Controllers
                 return NotFound();
             }
 
-            var zbior = await _context.Zbior
+            var zbior = await _context.Zbior.Include(z => z.Zasob)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (zbior == null)
             {
@@ -48,7 +89,11 @@ namespace Biblioteka.Controllers
         // GET: Zbiors/Create
         public IActionResult Create()
         {
-            return View();
+            var addEdit = new AddEditZbiorViewModel()
+            {
+                zasobs = _context.Zasob.ToList().OrderBy(z => z.Tytul).ToList()
+            };
+            return View(addEdit);
         }
 
         // POST: Zbiors/Create
@@ -56,15 +101,16 @@ namespace Biblioteka.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,CzyDostepny")] Zbior zbior)
+        public async Task<IActionResult> Create([Bind("Id,CzyDostepny")] Zbior zbior, int selectedZasobId)
         {
-            if (ModelState.IsValid)
-            {
+            //if (ModelState.IsValid)
+            //{
+                zbior.Zasob = _context.Zasob.ToList().Find(z => z.Id == selectedZasobId);
                 _context.Add(zbior);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            }
-            return View(zbior);
+            //}
+            //return View(zbior);
         }
 
         // GET: Zbiors/Edit/5
@@ -80,7 +126,8 @@ namespace Biblioteka.Controllers
             {
                 return NotFound();
             }
-            return View(zbior);
+            var addEdit = new AddEditZbiorViewModel() { zbior = zbior, zasobs= _context.Zasob.ToList().OrderBy(z => z.Tytul).ToList() };
+            return View(addEdit);
         }
 
         // POST: Zbiors/Edit/5
@@ -88,17 +135,18 @@ namespace Biblioteka.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,CzyDostepny")] Zbior zbior)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,CzyDostepny")] Zbior zbior, int selectedZasobId)
         {
             if (id != zbior.Id)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
-            {
+            //if (ModelState.IsValid)
+            //{
                 try
                 {
+                    zbior.Zasob = _context.Zasob.ToList().Find(z => z.Id == selectedZasobId);
                     _context.Update(zbior);
                     await _context.SaveChangesAsync();
                 }
@@ -114,8 +162,9 @@ namespace Biblioteka.Controllers
                     }
                 }
                 return RedirectToAction(nameof(Index));
-            }
-            return View(zbior);
+            //}
+            //var addEdit = new AddEditZbiorViewModel() { zbior = zbior, zasobs = _context.Zasob.ToList().OrderBy(z => z.Tytul).ToList() };
+            //return View(addEdit);
         }
 
         // GET: Zbiors/Delete/5

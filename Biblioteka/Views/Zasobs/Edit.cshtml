@@ -1,4 +1,4 @@
-﻿@model Biblioteka.Models.Zasob
+﻿@model Biblioteka.Models.AddEditZasobViewModel
 
 @{
     ViewData["Title"] = "Edit";
@@ -12,16 +12,26 @@
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="Zasob.Id" />
             <div class="form-group">
-                <label asp-for="Tytul" class="control-label"></label>
-                <input asp-for="Tytul" class="form-control" />
-                <span asp-validation-for="Tytul" class="text-danger"></span>
+                <label asp-for="Zasob.Tytul" class="control-label"></label>
+                <input asp-for="Zasob.Tytul" class="form-control" />
+                <span asp-validation-for="Zasob.Tytul" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ISBN" class="control-label"></label>
-                <input asp-for="ISBN" class="form-control" />
-                <span asp-validation-for="ISBN" class="text-danger"></span>
+                <label asp-for="Zasob.ISBN" class="control-label"></label>
+                <input asp-for="Zasob.ISBN" class="form-control" />
+                <span asp-validation-for="Zasob.ISBN" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="SelectedAutorIds">Select Authors</label>
+                <select multiple class="form-control" id="SelectedAutorIds" name="SelectedAutorIds">
+                    @foreach (var autor in Model.Autorzy)
+                    {
+                        <option value="@autor.Id">@autor.Nazwa</option>
+                    }
+                </select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
