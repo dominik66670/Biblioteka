@@ -1,5 +1,6 @@
-﻿@model IEnumerable<Biblioteka.Models.Autor>
-
+﻿@using X.PagedList.Mvc.Core
+@using X.PagedList;
+@model IPagedList<Biblioteka.Models.Autor>
 @{
     ViewData["Title"] = "Index";
 }
@@ -22,16 +23,16 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Nazwa)
+                @Html.DisplayNameFor(model => model.First().Nazwa)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Description)
+                @Html.DisplayNameFor(model => model.First().Description)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DataUrodzenia)
+                @Html.DisplayNameFor(model => model.First().DataUrodzenia)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DataSmierci)
+                @Html.DisplayNameFor(model => model.First().DataSmierci)
             </th>
             <th></th>
         </tr>
@@ -60,3 +61,11 @@
 }
     </tbody>
 </table>
+<div class="text-center">
+    @Html.PagedListPager(Model, page => Url.Action("Index", new
+    {
+    page,
+    nameSearchString = ViewContext.HttpContext.Request.Query["serachString"],
+    order = ViewContext.HttpContext.Request.Query["order"]
+    }))
+</div>

@@ -9,6 +9,7 @@ using Biblioteka.Data;
 using Biblioteka.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.Runtime.Intrinsics.X86;
+using X.PagedList;
 
 namespace Biblioteka.Controllers
 {
@@ -22,8 +23,10 @@ namespace Biblioteka.Controllers
         }
 
         // GET: Autors
-        public async Task<IActionResult> Index(string? serachString, string? order)
+        public async Task<IActionResult> Index(int? page,string? serachString, string? order)
         {
+            int pageNumber = page ?? 1;
+            int pageSize = 10;
             var autorzy = _context.Autor.ToList();
             if (!serachString.IsNullOrEmpty())
             {
@@ -38,7 +41,8 @@ namespace Biblioteka.Controllers
                         autorzy = autorzy.OrderByDescending(a => a.Nazwa).ToList();
                     }
                 }
-                return View(autorzy);
+                IPagedList<Autor> pagedAutors = autorzy.ToPagedList(pageNumber, pageSize);
+                return View(pagedAutors);
             }
             else
             {
@@ -53,8 +57,8 @@ namespace Biblioteka.Controllers
                         autorzy = autorzy.OrderByDescending(a => a.Nazwa).ToList();
                     }
                 }
-
-                return View(autorzy);
+                IPagedList<Autor> pagedAutors = autorzy.ToPagedList(pageNumber, pageSize);
+                return View(pagedAutors);
             }
               
         }
