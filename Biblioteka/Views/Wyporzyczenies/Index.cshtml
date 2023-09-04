@@ -11,7 +11,11 @@
 </p>
 <form asp-controller="Wyporzyczenies" asp-action="Index" method="get">
     <p>
-        Imie i Nazwisko <input type="text" name="nameSerachString" /></br>
+        Szukaj po : <select name="searchField" >
+            <option selected="true" value="1">Imie i Nazwisko</option>
+            <option value="2">Id Zbioru</option>
+        </select>
+        <input type="text" name="searchString" /></br>
         Status</br>
         <select multiple name="szukanyStatus">
             @foreach(var item in Model.statuses)
@@ -41,7 +45,10 @@
                 @Html.DisplayNameFor(model => model.wyporzyczenies.First().Wyporzyczajacy)
             </th>
             <th>
-                Id zbioru
+                Kod zbioru
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.wyporzyczenies.First().WyporzyczanyZbior.Zasob)
             </th>
             <th></th>
         </tr>
@@ -62,11 +69,18 @@
                 @Html.DisplayFor(modelItem => item.Wyporzyczajacy.Imie)
                 @Html.DisplayFor(modelItem => item.Wyporzyczajacy.Nazwisko)
             </td>
-                <td>
-                    <a asp-controller="Zbiors" asp-action="Details" asp-route-id="@item.WyporzyczanyZbior.Id">@Html.DisplayFor(modelItem => item.WyporzyczanyZbior.Id)</a>
-                </td>
+            <td>
+                 <a asp-controller="Zbiors" asp-action="Details" asp-route-id="@item.WyporzyczanyZbior.Id">@Html.DisplayFor(modelItem => item.WyporzyczanyZbior.Id)</a>
+            </td>
+            <td>
+                 @Html.DisplayFor(modelItem => item.WyporzyczanyZbior.Zasob.Tytul)
+            </td>
             <td>
                 <a asp-action="Details" asp-route-id="@item.Id">Szczegóły</a> |
+                    @if (!item.ObecnyStatus.Nazwa.Equals("Zakończone"))
+                    {
+                        <a asp-action="Zwrot" asp-route-id="@item.Id">Zwróć</a>
+                    }
             </td>
         </tr>
 }

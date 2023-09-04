@@ -197,8 +197,8 @@ namespace Biblioteka
                             Wyporzyczajacy = context.LibraryUser.ToList().Find(x => x.Nazwisko == "Krawczyk"),
                             WyporzyczanyZbior = context.Zbior.Include(x => x.Zasob).ToList().Find(x => x.CzyDostepny == false && x.Zasob.ISBN == "9780261102156"),
                             ObecnyStatus = context.Status.ToList().Find(x => x.Nazwa == "Trwa"),
-                            DataWyporzyczenia = DateTime.Now,
-                            DataZwrotu = DateTime.Now.AddDays(30),
+                            DataWyporzyczenia = DateTime.Now.AddDays(-60),
+                            DataZwrotu = DateTime.Now.AddDays(-30),
                         },
                         new Models.Wyporzyczenie
                         {

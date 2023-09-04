@@ -1,29 +1,54 @@
-﻿@model Biblioteka.Models.Wyporzyczenie
+﻿@model Biblioteka.Models.AddWyporzyczenieViewModel
 
 @{
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
-
-<h4>Wyporzyczenie</h4>
+<h1>Wyporzycz</h1>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="DataWyporzyczenia" class="control-label"></label>
-                <input asp-for="DataWyporzyczenia" class="form-control" />
-                <span asp-validation-for="DataWyporzyczenia" class="text-danger"></span>
+                <label class="control-label">Wybierz Czytelnika</label>
+                <select asp-for="CzytelnikId" class="form-control">
+                    @foreach (var czytelnik in Model.Czytelnicy)
+                    {
+                        @if(Model.CzytelnikId != null && Model.CzytelnikId==czytelnik.Id)
+                        {
+                            <option selected="true" value="@czytelnik.Id">@czytelnik.Nazwisko @czytelnik.Imie </option>
+                        }
+                        else
+                        {
+                            <option value="@czytelnik.Id">@czytelnik.Nazwisko @czytelnik.Imie </option>
+                        }
+                    }    
+                </select>
+                <span asp-validation-for="CzytelnikId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="DataZwrotu" class="control-label"></label>
-                <input asp-for="DataZwrotu" class="form-control" />
-                <span asp-validation-for="DataZwrotu" class="text-danger"></span>
+                <label class="control-label">Wybierz zasób</label>
+                <select asp-for="ZasobId" class="form-control">
+                    @foreach (var zasob in Model.Zasoby)
+                    {
+                        @if (Model.ZasobId != null && Model.ZasobId == zasob.Id)
+                        {
+                            <option selected="true" value="@zasob.Id">@zasob.Tytul </option>
+                        }
+                        else
+                        {
+                            <option selected="true" value="@zasob.Id">@zasob.Tytul </option>
+                        }
+                    }
+                </select>
+                <span asp-validation-for="ZasobId" class="text-danger"></span>
+            </div>
+            <div class="form-control">
+                @Html.ValidationMessage("BrakZbioru")
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Wypożycz" class="btn btn-primary" />
             </div>
         </form>
     </div>
