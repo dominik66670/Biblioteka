@@ -21,7 +21,7 @@ namespace Biblioteka.Controllers
         }
 
         // GET: Wyporzyczenies
-        public async Task<IActionResult> Index(string? searchString, List<int>? szukanyStatus, string order, int searchField)
+        public async Task<IActionResult> Index(string? searchString, List<int>? szukanyStatus, string order, int searchField,int? czytId)
         {
             await _context.Wyporzyczenie.Include(w => w.ObecnyStatus).ForEachAsync(w =>
             {
@@ -53,6 +53,12 @@ namespace Biblioteka.Controllers
             {
                 szukane.AddRange( Wyporzyczenies );
             }
+
+            if (czytId.HasValue)
+            {
+                szukane = szukane.FindAll(w => w.Wyporzyczajacy.Id==czytId);
+            }
+
             if (!searchString.IsNullOrEmpty())
             {
                 if(searchField == 1)

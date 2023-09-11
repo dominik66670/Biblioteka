@@ -58,7 +58,12 @@ namespace Biblioteka.Controllers
                     }
                 }
                 IPagedList<Autor> pagedAutors = autorzy.ToPagedList(pageNumber, pageSize);
-                return View(pagedAutors);
+                var viewModel = new AutorsViewModel()
+                {
+                    autors = pagedAutors,
+                    zasobs = await _context.Zasob.Include(z => z.Autorzy).ToListAsync()
+                };
+                return View(viewModel);
             }
               
         }

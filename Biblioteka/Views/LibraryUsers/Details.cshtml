@@ -4,10 +4,10 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<h1>Szczegóły</h1>
 
 <div>
-    <h4>LibraryUser</h4>
+    <h4>Czytelnik</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -27,6 +27,12 @@
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Adres)
+        </dd>
+        <dt class="col-sm-2">
+            Lista wyporzyczeń
+        </dt>
+        <dd class="col-sm-10">
+            <a asp-controller="Wyporzyczenies" asp-action="Index" asp-route-czytId="@Model.Id">Tutaj</a>
         </dd>
     </dl>
 </div>

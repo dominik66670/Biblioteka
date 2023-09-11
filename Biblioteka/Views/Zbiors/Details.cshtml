@@ -4,7 +4,7 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<h1>Szczegóły</h1>
 
 <div>
     <h4>Zbior</h4>
@@ -14,13 +14,20 @@
             @Html.DisplayNameFor(model => model.CzyDostepny)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CzyDostepny)
+            @if (Model.CzyDostepny)
+            {
+                <font color="green">Dostępny</font>
+            }
+            else
+            {
+                <font color="red">Nie dostępny</font>
+            }
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Zasob.Tytul)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Zasob.Tytul)
+            <a asp-controller="Zasobs" asp-action="Details" asp-route-id="@Model.Zasob.Id">@Html.DisplayFor(model => model.Zasob.Tytul)</a>
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Zasob.ISBN)

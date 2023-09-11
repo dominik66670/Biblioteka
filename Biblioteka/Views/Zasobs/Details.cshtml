@@ -4,7 +4,7 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Informacje o autorze</h1>
+<h1>Szczegóły</h1>
 
 <div>
     <h4>Zasob</h4>
@@ -31,9 +31,16 @@
                 <a asp-controller="Autors" asp-action="Details" asp-route-id="@autor.Id">@Html.DisplayFor(Model => autor.Nazwa)</a>
             }
         </dd>
+        <dt class="col-sm-2">
+            Zbiory zasobu
+        </dt>
+        <dd class="col-sm-10">
+            <a asp-controller="Zbiors" asp-action="Index" asp-route-serachString="@Model.ISBN" asp-route-szukanePole="2" >Tutaj</a>
+        </dd>
     </dl>
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
+    <a asp-controller="Zbiors" asp-action="Create" asp-route-isbnZasobu="@Model?.ISBN">Dodaj zbiór</a> |
     <a asp-action="Index">Back to List</a>
 </div>

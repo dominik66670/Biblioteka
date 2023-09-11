@@ -4,7 +4,7 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
+<h1>Dodaj</h1>
 
 <h4>Zbior</h4>
 <hr />
@@ -22,7 +22,15 @@
                 <select class="form-control" id="selectedZasobId" name="selectedZasobId">
                     @foreach (var zasob in Model.zasobs)
                     {
-                        <option value="@zasob.Id">@zasob.Tytul @zasob.ISBN</option>
+                        if (!string.IsNullOrEmpty(Context.Request.Query["isbnZasobu"]) &&  zasob.ISBN == Context.Request.Query["isbnZasobu"])
+                        {
+                            <option selected="true" value="@zasob.Id">@zasob.Tytul @zasob.ISBN</option>
+                        }
+                        else
+                        {
+                            <option value="@zasob.Id">@zasob.Tytul @zasob.ISBN</option>
+                        }
+                        
                     }
                 </select>
             <div class="form-group">

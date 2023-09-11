@@ -22,9 +22,12 @@ namespace Biblioteka.Controllers
         // GET: LibraryUsers
         public async Task<IActionResult> Index()
         {
-              return _context.LibraryUser != null ? 
-                          View(await _context.LibraryUser.ToListAsync()) :
-                          Problem("Entity set 'BibliotekaContext.LibraryUser'  is null.");
+            var viewModel = new LibraryUserViewModel()
+            {
+                Czytelnicy= await _context.LibraryUser.ToListAsync(),
+                Wyporzyczenia = await _context.Wyporzyczenie.Include(w => w.Wyporzyczajacy).ToListAsync()
+            };
+              return View(viewModel);
         }
 
         // GET: LibraryUsers/Details/5

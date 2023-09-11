@@ -8,6 +8,7 @@ namespace Biblioteka.Models
         public int Id { get; set; }
         [Required]
         public string Nazwa { get; set; }
+        [Display(Name = "Opis")]
         public string? Description { get; set; }
         [DataType(DataType.Date)]
         [Display(Name = "Data urodzenia")]

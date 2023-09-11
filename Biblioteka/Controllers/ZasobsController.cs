@@ -66,9 +66,13 @@ namespace Biblioteka.Controllers
                     }
                 }
             }
+            var viewModel = new ZasobViewModel()
+            {
+                zasobs = zasoby,
+                zbiors = await _context.Zbior.Include(z => z.Zasob).ToListAsync()
+            };
 
-
-            return View(zasoby);
+            return View(viewModel);
         }
 
         // GET: Zasobs/Details/5

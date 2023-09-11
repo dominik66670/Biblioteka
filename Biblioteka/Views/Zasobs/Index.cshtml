@@ -1,10 +1,10 @@
-﻿@model IEnumerable<Biblioteka.Models.Zasob>
+﻿@model ZasobViewModel
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Widok Zasobów</h1>
+<h1>Zasoby</h1>
 
 <p>
     <a asp-action="Create">Dodaj nowy zasób</a>
@@ -26,19 +26,22 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Tytul)
+                @Html.DisplayNameFor(model => model.zasobs.First().Tytul)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ISBN)
+                @Html.DisplayNameFor(model => model.zasobs.First().ISBN)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Autorzy)
+                @Html.DisplayNameFor(model => model.zasobs.First().Autorzy)
+            </th>
+            <th>
+                Ilość egzemplarzy w bibliotece
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var item in Model.zasobs) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Tytul)
@@ -56,6 +59,9 @@
                     }
                     
             </td>
+                <td>
+                    @Model.zbiors.Count(z => z.Zasob==item)
+                </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edytuj</a>
                 <a asp-action="Details" asp-route-id="@item.Id">Szczegóły</a>

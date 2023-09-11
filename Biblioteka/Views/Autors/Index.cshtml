@@ -1,11 +1,11 @@
 ﻿@using X.PagedList.Mvc.Core
 @using X.PagedList;
-@model IPagedList<Biblioteka.Models.Autor>
+@model AutorsViewModel
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Liasta autorów zapisanych w bibliotece</h1>
+<h1>Autorzy</h1>
 
 <p>
     <a asp-action="Create">Dodaj Autora</a>
@@ -23,22 +23,26 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.First().Nazwa)
+                @Html.DisplayNameFor(model => model.autors.First().Nazwa)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.First().Description)
+                @Html.DisplayNameFor(model => model.autors.First().Description)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.First().DataUrodzenia)
+                @Html.DisplayNameFor(model => model.autors.First().DataUrodzenia)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.First().DataSmierci)
+                @Html.DisplayNameFor(model => model.autors.First().DataSmierci)
+            </th>
+            <th>
+                Liczba zasobów autora
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+        @foreach (var item in Model.autors)
+        {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Nazwa)
@@ -52,6 +56,9 @@
             <td>
                 @Html.DisplayFor(modelItem => item.DataSmierci)
             </td>
+                <td>
+                    @Model.zasobs.Count(z => z.Autorzy.Any(a => a==item))
+                </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edytuj</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Szczegóły</a> |
@@ -62,7 +69,7 @@
     </tbody>
 </table>
 <div class="text-center">
-    @Html.PagedListPager(Model, page => Url.Action("Index", new
+    @Html.PagedListPager(Model.autors, page => Url.Action("Index", new
     {
     page,
     nameSearchString = ViewContext.HttpContext.Request.Query["serachString"],

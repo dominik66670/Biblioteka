@@ -65,7 +65,12 @@ namespace Biblioteka.Controllers
                     }
                 }
             }
-            return View(zbiory);
+            var viewModel = new ZbiorsViewModel()
+            {
+                Zbiors = zbiory,
+                wyporzyczenies = await _context.Wyporzyczenie.Include(w => w.WyporzyczanyZbior).ToListAsync()
+            };
+            return View(viewModel);
         }
 
         // GET: Zbiors/Details/5

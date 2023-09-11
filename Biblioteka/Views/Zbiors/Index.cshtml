@@ -1,10 +1,10 @@
-﻿@model IEnumerable<Biblioteka.Models.Zbior>
+﻿@model ZbiorsViewModel
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Widok zbiorów bilbioteki</h1>
+<h1>Zbiory</h1>
 
 <p>
     <a asp-action="Create">Dodaj nowy zbiór</a>
@@ -27,34 +27,48 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Id)
+                @Html.DisplayNameFor(model => model.Zbiors.First().Id)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CzyDostepny)
+                @Html.DisplayNameFor(model => model.Zbiors.First().CzyDostepny)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Zasob.Tytul)
+                @Html.DisplayNameFor(model => model.Zbiors.First().Zasob.Tytul)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Zasob.ISBN)
+                @Html.DisplayNameFor(model => model.Zbiors.First().Zasob.ISBN)
+            </th>
+            <th>
+                Ilość wyporzyczeń
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var item in Model.Zbiors) {
         <tr>
                 <td>
                     @Html.DisplayFor(modelItem => item.Id)
                 </td>
             <td>
-                @Html.DisplayFor(modelItem => item.CzyDostepny)
+                    @if (item.CzyDostepny)
+                    {
+                        <font color="green">Dostępny</font>
+                    }
+                    else
+                    {
+                        <font color="red">Nie dostępny</font>
+                    }
+
             </td>
             <td>
                 <a asp-controller="Zasobs" asp-action="Details" asp-route-id="@item.Zasob.Id">@Html.DisplayFor(modelItem => item.Zasob.Tytul)</a>
             </td>
-                <td>
+            <td>
                     @Html.DisplayFor(modelItem => item.Zasob.ISBN)
+            </td>
+                <td>
+                    @Model.wyporzyczenies.Count(w => w.WyporzyczanyZbior==item)
                 </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edytuj</a> |

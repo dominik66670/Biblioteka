@@ -4,7 +4,7 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<h1>Szczegóły</h1>
 
 <div>
     <h4>Wyporzyczenie</h4>
@@ -15,8 +15,10 @@
             @Html.DisplayNameFor(model => model.Wyporzyczajacy.Nazwisko)
         </dt>
         <dd class="col-sm-10">
+            <a asp-controller="LibraryUsers" asp-action="Details" asp-route-id=@Model.Wyporzyczajacy.Id>
             @Html.DisplayFor(model => model.Wyporzyczajacy.Imie)
             @Html.DisplayFor(model => model.Wyporzyczajacy.Nazwisko)
+            </a>
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.ObecnyStatus)
@@ -36,7 +38,7 @@
             Zasób
         </dt>
         <dd class="col-sm-10">
-            <a asp-controller="Zasobss" asp-action="Details" asp-route-id=@Model.WyporzyczanyZbior.Zasob.Id>@Html.DisplayFor(model => model.WyporzyczanyZbior.Zasob.Tytul)</a>
+            <a asp-controller="Zasobs" asp-action="Details" asp-route-id=@Model.WyporzyczanyZbior.Zasob.Id>@Html.DisplayFor(model => model.WyporzyczanyZbior.Zasob.Tytul)</a>
         </dd>
 
         <dt class = "col-sm-2">
